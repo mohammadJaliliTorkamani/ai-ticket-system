@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   api:
     build: .
@@ -6,8 +8,21 @@ services:
       - "8000:8000"
     depends_on:
       - mongo
+      - redis
     env_file:
       - .env
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  worker:
+    build: .
+    container_name: celery_worker
+    depends_on:
+      - api
+      - redis
+      - mongo
+    env_file:
+      - .env
+    command: celery -A app.tasks.celery_app.celery_app worker --loglevel=info
 
   mongo:
     image: mongo:7

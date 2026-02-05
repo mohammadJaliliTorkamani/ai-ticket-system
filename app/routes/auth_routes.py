@@ -1,12 +1,14 @@
 from fastapi import APIRouter, HTTPException, Depends
-from app.schemas.user_schema import UserCreate, UserOut
-from app.models.user import User
-from app.db.crud import create_user, get_user_by_email
-from app.core.security import hash_password, verify_password, create_access_token
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
+from app.core.security import hash_password, verify_password, create_access_token
+from app.db.crud import create_user, get_user_by_email
+from app.models.user import User
+from app.schemas.user_schema import UserCreate, UserOut
 
 router = APIRouter(tags=["Auth"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
+
 
 # --- Register ---
 @router.post("/auth/register", response_model=UserOut)

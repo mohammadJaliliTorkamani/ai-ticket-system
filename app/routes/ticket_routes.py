@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
-from app.schemas.ticket_schema import TicketCreate, TicketOut
-from app.models.ticket import Ticket
+from fastapi import APIRouter, Depends
+
 from app.core.dependencies import get_current_user
 from app.db.crud import create_ticket, get_tickets_by_user
+from app.models.ticket import Ticket
+from app.schemas.ticket_schema import TicketCreate, TicketOut
 from app.tasks.ticket_tasks import analyze_ticket
 
 router = APIRouter(tags=["Tickets"])

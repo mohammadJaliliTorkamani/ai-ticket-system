@@ -1,10 +1,13 @@
-from app.tasks.celery_app import celery_app
-from app.db.mongodb import db
+import os
+
 from bson import ObjectId
+from langchain.chains import LLMChain
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
-from langchain.chains import LLMChain
-import os
+
+from app.core.logger import logger
+from app.db.mongodb import db
+from app.tasks.celery_app import celery_app
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
@@ -32,6 +35,8 @@ chain = LLMChain(llm=llm, prompt=prompt)
 
 @celery_app.task
 def analyze_ticket(ticket_id: str, title: str, description: str):
+    logger.info(f"Analyzing ticket {ticket_id}")
+
     # Run LangChain
     result = chain.run(title=title, description=description)
 
@@ -51,3 +56,4 @@ def analyze_ticket(ticket_id: str, title: str, description: str):
             "suggested_reply": data.get("suggested_reply")
         }}
     )
+    logger.info(f"Ticket {ticket_id} updated with AI results")

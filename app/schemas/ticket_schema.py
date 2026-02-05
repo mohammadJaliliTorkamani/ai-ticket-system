@@ -1,9 +1,12 @@
-from pydantic import BaseModel, Field
 from typing import Optional
+
+from pydantic import BaseModel
+
 
 class TicketCreate(BaseModel):
     title: str
     description: str
+
 
 class TicketOut(BaseModel):
     id: str

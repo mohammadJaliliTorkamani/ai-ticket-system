@@ -1,7 +1,9 @@
-from pydantic import BaseModel, Field
-from bson import ObjectId
-from typing import Optional
 from datetime import datetime
+from typing import Optional
+
+from bson import ObjectId
+from pydantic import BaseModel, Field
+
 from app.models.user import PyObjectId
 
 
@@ -28,4 +30,3 @@ class Ticket(BaseModel):
                 "status": "open"
             }
         }
-

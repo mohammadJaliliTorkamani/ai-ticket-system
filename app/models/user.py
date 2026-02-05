@@ -1,10 +1,8 @@
-from pydantic import BaseModel, EmailStr, Field
-from bson import ObjectId
-from typing import Optional
-
 # Helper for ObjectId
 from bson import ObjectId
 from pydantic import BaseModel
+from pydantic import EmailStr, Field
+
 
 class PyObjectId(ObjectId):
     @classmethod
@@ -21,7 +19,6 @@ class PyObjectId(ObjectId):
     def __get_pydantic_json_schema__(cls, core_schema, handler):
         # This replaces __modify_schema__ in Pydantic v2
         return {"type": "string"}
-
 
 
 class User(BaseModel):
