@@ -1,4 +1,4 @@
-# AI-Powered Support Ticket Backend
+# Ticketifier: AI-Powered Support Ticket Backend
 
 ![FastAPI](https://img.shields.io/badge/FastAPI-000000?style=flat&logo=fastapi&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat&logo=mongodb&logoColor=white)
