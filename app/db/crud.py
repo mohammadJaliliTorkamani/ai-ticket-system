@@ -28,3 +28,9 @@ async def get_tickets_by_user(user_id: str):
     async for ticket in cursor:
         tickets.append(Ticket(**ticket))
     return tickets
+
+async def get_user_by_email_by_id(user_id: str) -> Optional[User]:
+    data = await db.users.find_one({"_id": ObjectId(user_id)})
+    if data:
+        return User(**data)
+    return None
