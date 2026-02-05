@@ -19,6 +19,7 @@ async def register(user: UserCreate):
     created_user = await create_user(user_obj)
     return UserOut(id=str(created_user.id), email=created_user.email, is_active=created_user.is_active)
 
+
 # --- Login ---
 @router.post("/auth/login")
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
