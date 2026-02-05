@@ -218,17 +218,6 @@ Celery triggers **LangChain task** → AI fills summary, category, suggested rep
 
 ---
 
-## 📌 Why This Project is CV-Worthy
-
-- Realistic **production backend architecture**  
-- **Async API + background tasks** → scalable design  
-- **AI integration** → modern, in-demand skill  
-- **Containerized** → deployable anywhere  
-- Modular, professional **folder structure**  
-- Demonstrates **full-stack backend skills** (auth, database, async, AI, deployment)  
-
----
-
 ## ⚡ Next Enhancements (Optional)
 
 - Add **unit tests** with `pytest`  
