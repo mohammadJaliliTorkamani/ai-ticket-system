@@ -18,7 +18,8 @@ class Ticket(BaseModel):
 
     class Config:
         allow_population_by_field_name = True
-        json_encoders = {ObjectId: str, datetime: lambda dt: dt.isoformat()}
+        validate_assignment = True
+        json_encoders = {ObjectId: str, "datetime": lambda dt: dt.isoformat()}
         schema_extra = {
             "example": {
                 "user_id": "64b9c2f6c2a1b2a1f0a1a1a1",
@@ -27,3 +28,4 @@ class Ticket(BaseModel):
                 "status": "open"
             }
         }
+

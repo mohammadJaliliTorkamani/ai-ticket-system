@@ -5,6 +5,10 @@ python-dotenv
 motor
 passlib[bcrypt]
 python-jose[cryptography]
+pydantic[email]
 celery
 redis
 httpx
+langchain
+openai
+python-multipart

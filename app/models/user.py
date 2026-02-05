@@ -3,6 +3,9 @@ from bson import ObjectId
 from typing import Optional
 
 # Helper for ObjectId
+from bson import ObjectId
+from pydantic import BaseModel
+
 class PyObjectId(ObjectId):
     @classmethod
     def __get_validators__(cls):
@@ -11,12 +14,14 @@ class PyObjectId(ObjectId):
     @classmethod
     def validate(cls, v):
         if not ObjectId.is_valid(v):
-            raise ValueError("Invalid objectid")
+            raise ValueError("Invalid ObjectId")
         return ObjectId(v)
 
     @classmethod
-    def __modify_schema__(cls, field_schema):
-        field_schema.update(type="string")
+    def __get_pydantic_json_schema__(cls, core_schema, handler):
+        # This replaces __modify_schema__ in Pydantic v2
+        return {"type": "string"}
+
 
 
 class User(BaseModel):
@@ -26,8 +31,9 @@ class User(BaseModel):
     is_active: bool = True
 
     class Config:
+        validate_assignment = True
+        json_encoders = {ObjectId: str, "datetime": lambda dt: dt.isoformat()}
         allow_population_by_field_name = True
-        json_encoders = {ObjectId: str}
         schema_extra = {
             "example": {
                 "email": "user@example.com",
