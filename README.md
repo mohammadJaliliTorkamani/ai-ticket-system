@@ -10,7 +10,7 @@
 
 ---
 
-## 🔥 Project Overview
+## Project Overview
 
 A **production-ready backend system** that combines modern backend architecture with **AI-driven ticket automation**, designed to demonstrate industry-standard backend skills:
 
@@ -23,7 +23,7 @@ A **production-ready backend system** that combines modern backend architecture 
 
 ---
 
-## 🏗 Architecture Overview
+## Architecture Overview
 
 ```
 +-------------------+        +-------------------+
@@ -58,7 +58,7 @@ A **production-ready backend system** that combines modern backend architecture 
 
 ---
 
-## 🛠 Tech Stack
+## Tech Stack
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
@@ -72,7 +72,7 @@ A **production-ready backend system** that combines modern backend architecture 
 
 ---
 
-## ⚡ Features
+## Features
 
 - **User Management**  
   - Register, Login, JWT-based authentication  
@@ -92,7 +92,7 @@ A **production-ready backend system** that combines modern backend architecture 
 
 ---
 
-## 📁 Folder Structure
+## Folder Structure
 
 ```
 ai-ticket-backend/
@@ -127,7 +127,7 @@ ai-ticket-backend/
 
 ---
 
-## ⚡ Setup & Running
+## Setup & Running
 
 ### 1️⃣ Clone the repo
 
@@ -162,7 +162,7 @@ This will start:
 
 ---
 
-## 🧪 API Endpoints
+## API Endpoints
 
 | Endpoint | Method | Description | Auth |
 |----------|--------|------------|------|
@@ -218,16 +218,9 @@ Celery triggers **LangChain task** → AI fills summary, category, suggested rep
 
 ---
 
-## ⚡ Next Enhancements (Optional)
+## Next Enhancements (Optional)
 
 - Add **unit tests** with `pytest`  
 - Add **admin panel API** for ticket moderation  
 - Add **logging, monitoring, and metrics** (e.g., Prometheus, Flower for Celery)  
-- Swap OpenAI with **local LLM** for fully self-hosted AI  
-
----
-
-## 🚀 Author
-
-**Mohammad Jalili** – Software Engineer (Backend / Applied ML) 
-
+- Swap OpenAI with **local LLM** for fully self-hosted AI
