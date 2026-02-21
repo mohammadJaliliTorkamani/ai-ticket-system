@@ -33,7 +33,7 @@ prompt = PromptTemplate(input_variables=["title", "description"], template=promp
 chain = LLMChain(llm=llm, prompt=prompt)
 
 
-@celery_app.task
+@celery_app.task(name="app.tasks.ticket_tasks.analyze_ticket")
 def analyze_ticket(ticket_id: str, title: str, description: str):
     logger.info(f"Analyzing ticket {ticket_id}")
 

@@ -9,3 +9,7 @@ celery_app = Celery(
     broker=REDIS_URL,
     backend=REDIS_URL
 )
+
+celery_app.conf.update(
+    imports=["app.tasks.ticket_tasks"]
+)

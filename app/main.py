@@ -4,9 +4,11 @@ from fastapi.responses import JSONResponse
 from app.core.logger import logger
 from app.db.mongodb import db
 from app.routes import auth_routes
+from app.routes import ticket_routes
 
 app = FastAPI(title="Welcome to AI Ticket Backend!")
 app.include_router(auth_routes.router)
+app.include_router(ticket_routes.router)
 
 
 @app.get("/health")
