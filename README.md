@@ -141,11 +141,16 @@ cd ai-ticket-backend
 Create `.env`:
 
 ```env
-MONGO_URI=mongodb://mongo:27017
+MONGO_URI=mongodb://admin:strongpassword@mongo:27017
+MONGO_DB=ai_ticket_db
 REDIS_URL=redis://redis:6379/0
 OPENAI_API_KEY=sk-your-openai-key
 SECRET_KEY=supersecretkey123
+MONGO_ROOT_USERNAME=admin
+MONGO_ROOT_PASSWORD=strongpassword
 ```
+
+Make sure that your mongodb uses the exact same username and password.
 
 ### 3️⃣ Build & Run (Docker Compose)
 
