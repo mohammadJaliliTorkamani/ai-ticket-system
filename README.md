@@ -15,6 +15,7 @@
 A **production-ready backend system** that combines modern backend architecture with **AI-driven ticket automation**, designed to demonstrate industry-standard backend skills:
 
 - Asynchronous REST API with **FastAPI**  
+- Semantic similarity search using **vector embeddings**
 - NoSQL storage with **MongoDB**  
 - Secure authentication using **JWT**  
 - Background task processing with **Celery + Redis**  
@@ -53,9 +54,10 @@ A **production-ready backend system** that combines modern backend architecture 
    - Ticket summary  
    - Ticket category  
    - Suggested reply  
-5. Result updated back in MongoDB  
-6. User retrieves AI-enhanced ticket asynchronously  
-
+   - Semantic embedding vector  
+5. Embedding stored in MongoDB  
+6. User can query similar tickets using semantic search  
+7. Results retrieved based on cosine similarity
 ---
 
 ## Tech Stack
@@ -79,7 +81,8 @@ A **production-ready backend system** that combines modern backend architecture 
 
 - **Ticket Management**  
   - Create, List tickets  
-  - Async AI processing (summary, category, suggested reply)  
+  - Retrieve similar tickets (AI-powered semantic similarity)  
+  - Async AI processing (summary, category, suggested reply, embedding generation)
 
 - **AI Integration**  
   - LangChain handles prompt engineering and AI orchestration  
@@ -175,7 +178,7 @@ This will start:
 | `/auth/login` | POST | Login user, returns JWT | ❌ |
 | `/tickets` | POST | Create new ticket | ✅ |
 | `/tickets` | GET | List tickets for current user | ✅ |
-
+| `/tickets/{ticket_id}/similar` | GET | Retrieve similar tickets for current user | ✅ |
 ---
 
 ### Example Workflow
@@ -217,6 +220,23 @@ Authorization: Bearer <JWT_TOKEN>
   "title": "Cannot login",
   "description": "Forgot password, cannot access account"
 }
+```
+
+4. **Get Similar Tickets**
+
+```json
+GET /tickets/{ticket_id}/similar
+Authorization: Bearer <JWT_TOKEN>
+[
+  {
+    "id": "65d123abc123abc123abc123",
+    "title": "Login issue",
+    "description": "Forgot password",
+    "summary": "User unable to login due to forgotten password.",
+    "category": "account",
+    "status": "open"
+  }
+]
 ```
 
 Celery triggers **LangChain task** → AI fills summary, category, suggested reply.
