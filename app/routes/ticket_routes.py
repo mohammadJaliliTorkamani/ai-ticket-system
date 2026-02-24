@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from app.core.dependencies import get_current_user
-from app.db.crud import create_ticket, get_tickets_by_user
+from app.db.crud import create_ticket, get_tickets_by_user, get_similar_tickets
 from app.models.ticket import Ticket
 from app.schemas.ticket_schema import TicketCreate, TicketOut
 from app.tasks.ticket_tasks import analyze_ticket
@@ -38,3 +38,9 @@ async def list_my_tickets(current_user=Depends(get_current_user)):
         result.append(TicketOut(**data))
 
     return result
+
+
+@router.get("/tickets/{ticket_id}/similar", response_model=list[TicketOut])
+async def list_similar_tickets(ticket_id: str, current_user=Depends(get_current_user)):
+    tickets = await get_similar_tickets(ticket_id, str(current_user.id))
+    return tickets

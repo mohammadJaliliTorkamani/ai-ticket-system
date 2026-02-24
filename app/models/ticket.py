@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from bson import ObjectId
 from pydantic import BaseModel, Field
@@ -17,6 +17,7 @@ class Ticket(BaseModel):
     suggested_reply: Optional[str] = None
     status: str = "open"  # open, pending, closed
     created_at: datetime = Field(default_factory=datetime.utcnow)
+    embedding: Optional[List[float]] = None
 
     class Config:
         allow_population_by_field_name = True

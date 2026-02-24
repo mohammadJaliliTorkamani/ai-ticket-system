@@ -4,6 +4,7 @@ from bson import ObjectId
 from langchain.chains import LLMChain
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
+from langchain.embeddings import OpenAIEmbeddings
 
 from app.core.logger import logger
 from app.db.mongodb import db
@@ -31,7 +32,7 @@ Respond in JSON format like:
 
 prompt = PromptTemplate(input_variables=["title", "description"], template=prompt_template)
 chain = LLMChain(llm=llm, prompt=prompt)
-
+embeddings_model = OpenAIEmbeddings(openai_api_key= OPENAI_API_KEY)
 
 @celery_app.task(name="app.tasks.ticket_tasks.analyze_ticket")
 def analyze_ticket(ticket_id: str, title: str, description: str):
@@ -47,13 +48,18 @@ def analyze_ticket(ticket_id: str, title: str, description: str):
     except:
         data = {"summary": "", "category": "other", "suggested_reply": ""}
 
+    #⃣ Generate embedding
+    text_for_embedding = f"{title}\n{description}"
+    embedding = embeddings_model.embed_query(text_for_embedding)
+
     # Update ticket in MongoDB
     db.tickets.update_one(
         {"_id": ObjectId(ticket_id)},
         {"$set": {
             "summary": data.get("summary"),
             "category": data.get("category"),
-            "suggested_reply": data.get("suggested_reply")
+            "suggested_reply": data.get("suggested_reply"),
+            "embedding": embedding
         }}
     )
     logger.info(f"Ticket {ticket_id} updated with AI results")
