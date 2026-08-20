@@ -4,6 +4,8 @@ Ticketifier is a single-page LLM request workbench for backend developers. Enter
 
 Ticketifier is open-source software created by [MJalili.com](https://mjalili.com). Source repository: [MJaliliT/ai-ticket-system](https://github.com/MJaliliT/ai-ticket-system).
 
+**Live demo:** [ticketifier.mjalili.com](https://ticketifier.mjalili.com)
+
 ## Repository safety
 
 Documentation and examples use placeholders only. Never commit or paste an API key, `.env` file, VPS IP address, SSH username, private key, host fingerprint, registry token, or other deployment credential. Keep production values in protected environment files or repository secrets. The public project and source-code URLs above are intentional and are not deployment credentials.
