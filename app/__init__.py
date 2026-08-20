@@ -1,0 +1,1 @@
+"""Ticketifier application package."""

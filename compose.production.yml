@@ -1,0 +1,32 @@
+name: ticketifier
+services:
+  gateway:
+    image: ${WEB_IMAGE:?WEB_IMAGE is required}
+    restart: unless-stopped
+    ports: ["127.0.0.1:${TICKETIFIER_PORT:?TICKETIFIER_PORT is required}:8080"]
+    depends_on:
+      api: { condition: service_healthy }
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+      - /var/cache/nginx:size=32m,uid=101,gid=101
+      - /var/run:size=2m,uid=101,gid=101
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 128m
+    cpus: 0.50
+    networks: [frontend]
+  api:
+    image: ${API_IMAGE:?API_IMAGE is required}
+    restart: unless-stopped
+    env_file: .env
+    read_only: true
+    tmpfs: ["/tmp:size=32m,mode=1777"]
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 384m
+    cpus: 1.0
+    stop_grace_period: 30s
+    networks: [frontend]
+networks:
+  frontend:

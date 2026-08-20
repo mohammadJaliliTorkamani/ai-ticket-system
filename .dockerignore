@@ -1,0 +1,16 @@
+.git
+.github
+.idea
+.venv
+venv
+__pycache__
+*.pyc
+.env
+.env.*
+!.env.example
+Archive.zip
+web/node_modules
+web/dist
+tests
+backups
+*.log

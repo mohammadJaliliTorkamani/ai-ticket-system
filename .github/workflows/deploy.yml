@@ -1,0 +1,107 @@
+name: Test, publish, and deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ticketifier-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install --disable-pip-version-check -r requirements.txt -r requirements-dev.txt
+      - run: ruff check .
+      - run: pytest --cov=app --cov-report=term-missing
+      - run: pip-audit -r requirements.txt
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - working-directory: web
+        run: npm ci --ignore-scripts
+      - working-directory: web
+        run: npm run lint
+      - working-directory: web
+        run: npm test
+      - working-directory: web
+        run: npm run build
+      - working-directory: web
+        run: npm audit --omit=dev --audit-level=high
+
+  publish-and-deploy:
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v6
+      - name: Authenticate to the container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and publish immutable images
+        env:
+          IMAGE_NAMESPACE: ${{ github.repository }}
+          RELEASE_SHA: ${{ github.sha }}
+        run: |
+          set -Eeuo pipefail
+          image_namespace="${IMAGE_NAMESPACE,,}"
+          docker build --pull --tag "ghcr.io/${image_namespace}/api:${RELEASE_SHA}" .
+          docker build --pull --tag "ghcr.io/${image_namespace}/web:${RELEASE_SHA}" web
+          docker push "ghcr.io/${image_namespace}/api:${RELEASE_SHA}"
+          docker push "ghcr.io/${image_namespace}/web:${RELEASE_SHA}"
+      - name: Configure SSH host verification
+        env:
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          set -Eeuo pipefail
+          install -d -m 700 ~/.ssh
+          install -m 600 /dev/null ~/.ssh/known_hosts
+          printf '%s\n' "$VPS_KNOWN_HOSTS" > ~/.ssh/known_hosts
+      - name: Install deployment key
+        env:
+          VPS_SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+        run: |
+          set -Eeuo pipefail
+          install -m 600 /dev/null ~/.ssh/ticketifier_deploy
+          printf '%s\n' "$VPS_SSH_PRIVATE_KEY" > ~/.ssh/ticketifier_deploy
+      - name: Upload scoped deployment files
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_SSH_PORT: ${{ secrets.VPS_SSH_PORT }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          set -Eeuo pipefail
+          ssh -p "$VPS_SSH_PORT" -i ~/.ssh/ticketifier_deploy "$VPS_USER@$VPS_HOST" \
+            "install -d -m 750 /opt/ticketifier/deploy"
+          scp -P "$VPS_SSH_PORT" -i ~/.ssh/ticketifier_deploy compose.production.yml \
+            "$VPS_USER@$VPS_HOST:/opt/ticketifier/compose.production.yml"
+          scp -P "$VPS_SSH_PORT" -i ~/.ssh/ticketifier_deploy \
+            deploy/deploy-release.sh \
+            "$VPS_USER@$VPS_HOST:/opt/ticketifier/deploy/"
+      - name: Deploy and verify, with automatic rollback
+        env:
+          IMAGE_NAMESPACE: ${{ github.repository }}
+          RELEASE_SHA: ${{ github.sha }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_SSH_PORT: ${{ secrets.VPS_SSH_PORT }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+        run: |
+          set -Eeuo pipefail
+          ssh -p "$VPS_SSH_PORT" -i ~/.ssh/ticketifier_deploy "$VPS_USER@$VPS_HOST" \
+            "chmod 700 /opt/ticketifier/deploy/deploy-release.sh && /opt/ticketifier/deploy/deploy-release.sh '$IMAGE_NAMESPACE' '$RELEASE_SHA' /opt/ticketifier"
