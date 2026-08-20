@@ -12,6 +12,7 @@ describe('Ticketifier request workbench', () => {
     expect(screen.getByText(/Authorization is always replaced with \[REDACTED\]/i)).toBeInTheDocument()
     expect(screen.getAllByRole('link',{name:/Open source on GitHub|Source code|View source/i})[0]).toHaveAttribute('href','https://github.com/MJaliliT/ai-ticket-system')
     expect(screen.getAllByRole('link',{name:/MJalili\.com/i})[0]).toHaveAttribute('href','https://mjalili.com')
+    expect(screen.getByText(/Created by MJalili\.com/i)).toBeInTheDocument()
   })
 
   it('submits a request and clears the API key field', async () => {

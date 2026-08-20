@@ -2,7 +2,7 @@
 
 Ticketifier is a single-page LLM request workbench for backend developers. Enter an OpenAI API key and message, wait for the response, then inspect the sanitized REST lifecycle across the browser, Ticketifier API, and OpenAI Responses API.
 
-Ticketifier is an open-source [MJalili.com](https://mjalili.com) project. Source repository: [MJaliliT/ai-ticket-system](https://github.com/MJaliliT/ai-ticket-system).
+Ticketifier is open-source software created by [MJalili.com](https://mjalili.com). Source repository: [MJaliliT/ai-ticket-system](https://github.com/MJaliliT/ai-ticket-system).
 
 ## Repository safety
 
