@@ -3,7 +3,6 @@ import logging
 import sys
 from datetime import UTC, datetime
 
-
 class JsonFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         payload = {
